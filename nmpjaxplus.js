@@ -7,6 +7,7 @@ YUI.add('gallery-pjaxplus', function(Y){
 			this.set('history', new Y.History());
 			this.set('html5support', Y.HistoryBase.html5);
 			this.ppCache = new Y.Cache({max:this.get('cacheNum')});
+			this.domain = new RegExp('^(http|https):\/\/' + window.location.hostname.replace('.','\.'));
 			
 			// remove leading dot from omitLinkClass, if any
 			if (this.get('omitLinkClass').match(/^\./)) {
@@ -40,7 +41,7 @@ YUI.add('gallery-pjaxplus', function(Y){
 					}
 					
 					if (goodext && !node.get('href').match(/^(mailto|javascript):/) && !node.get('href').match(/^#/) && 
-						node.get('href').match(thisdomain) && !node.hasClass(this.get('omitLinkClass'))) {
+						node.get('href').match(this.domain) && !node.hasClass(this.get('omitLinkClass'))) {
 							node.addClass('yui3-pjax');
 						}
 				}, this);
@@ -89,18 +90,6 @@ YUI.add('gallery-pjaxplus', function(Y){
 				}, document.body, 'a.yui3-pjax', this);
 			}
 			else {
-				var thisdomain = new RegExp('^(http|https):\/\/' + window.location.hostname.replace('.','\.'));
-				
-				if (this.get('history').get().page) {
-					// load initial page set in bookmark
-					var initialurl = this.get('history').get().page.replace(/_/g,'/');
-					this.startAjaxLoad({
-						clickTarget:null,
-						path:initialurl,
-						url:thisdomain + '/' + initialurl,
-						historyhash:this.get('history').get().page
-					});
-				}
 				Y.delegate('click', function(e) {
 					if (typeof e.target.get('pathname') !== "undefined") {
 						var historyhash = e.target.get('pathname').replace(/_/g,'-');
@@ -146,7 +135,7 @@ YUI.add('gallery-pjaxplus', function(Y){
 						}	
 						
 						if (goodext && !e.target.get('href').match(/^(mailto|javascript):/) && !e.target.get('href').match(/^#/) && 
-							e.target.get('href').match(thisdomain) && !e.target.hasClass(this.get('omitLinkClass'))) {
+							e.target.get('href').match(this.domain) && !e.target.hasClass(this.get('omitLinkClass'))) {
 								e.preventDefault();
 								this.startAjaxLoad({
 									clickTarget:e.target,
