@@ -4,9 +4,8 @@ YUI.add('gallery-pjaxplus', function(Y){
 		initializer : function( config ) {
 			// error checking for missing required variables
 			
-			this.set('history', new Y.HistoryHash());
-			//this.set('html5support', Y.HistoryBase.html5);
-			this.set('html5support', false);
+			this.set('history', new Y.History());
+			this.set('html5support', Y.HistoryBase.html5);
 			this.ppCache = new Y.Cache({max:this.get('cacheNum')});
 			
 			// remove leading dot from omitLinkClass, if any
