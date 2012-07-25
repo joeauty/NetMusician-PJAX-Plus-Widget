@@ -18,7 +18,32 @@ YUI.add('gallery-pjaxplus', function(Y){
 			var clickedLink;
 			
 			if (this.get('html5support')) {
-				Y.all('a:not(.' + this.get('omitLinkClass') + ')').addClass('yui3-pjax');
+				// attach yui3-pjax class to links with REST-like URLs or URLs with permitted file extensions
+				var goodext = false;
+				Y.all('a:not(.' + this.get('omitLinkClass') + ')').each(function(node) {
+					var pathnamearr = node.get('pathname').split(/\//);
+					var pathnameidx = pathnamearr.length - 1;
+					var filename = pathnamearr[pathnameidx];
+						
+					if (!filename.match(/\./)) {
+						// no file extension, valid REST-like URL
+						goodext = true;
+					}
+					else {
+						// URL contains file extensions, look for permitted file extensions
+						var goodext = Y.Array.some(this.get('permittedFileExts'), function(ext) {
+							var thisregex = new RegExp('\.' + ext + '$');
+							if (filename.match(thisregex)) {
+								return true;
+							}
+						});
+					}
+					
+					if (goodext && !node.get('href').match(/^(mailto|javascript):/) && !node.get('href').match(/^#/) && 
+						node.get('href').match(thisdomain) && !node.hasClass(this.get('omitLinkClass'))) {
+							node.addClass('yui3-pjax');
+						}
+				}, this);
 				
 				var PjaxLoader = new Y.Pjax({
 					addPjaxParam : this.get('addPjaxParam'),
@@ -107,7 +132,7 @@ YUI.add('gallery-pjaxplus', function(Y){
 						var filename = pathnamearr[pathnameidx];
 						
 						if (!filename.match(/\./)) {
-							// no file extension, REST-like URL
+							// no file extension, valid REST-like URL
 							goodext = true;
 						}
 						else {
