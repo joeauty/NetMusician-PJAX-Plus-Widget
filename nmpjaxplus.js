@@ -1,4 +1,4 @@
-YUI.add('gallery-pjaxplus', function(Y){    
+YUI.add('gallery-nmpjaxplus', function(Y){    
 	
     Y.PjaxPlus = Y.Base.create('pjaxplus', Y.Widget, [], { 
 		initializer : function( config ) {
