@@ -35,7 +35,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 					}
 					else {
 						// URL contains file extensions, look for permitted file extensions
-						var goodext = Y.Array.some(this.get('permittedFileExts'), function(ext) {
+						goodext = Y.Array.some(this.get('permittedFileExts'), function(ext) {
 							var thisregex = new RegExp('\.' + ext + '$');
 							if (filename.match(thisregex)) {
 								return true;
@@ -156,7 +156,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 						}
 						else {
 							// URL contains file extensions, look for permitted file extensions
-							var goodext = Y.Array.some(this.get('permittedFileExts'), function(ext) {
+							goodext = Y.Array.some(this.get('permittedFileExts'), function(ext) {
 								var thisregex = new RegExp('\.' + ext + '$');
 								if (filename.match(thisregex)) {
 									return true;
@@ -214,7 +214,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 						}
 					}, this)
 				}
-			}
+			};
 			
 			Y.io(configObj.url, cfg);
 		}
@@ -279,4 +279,4 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 		}
     });
     
-}, '@version@', {requires: ['base-build', 'widget', 'node', 'io', 'history', 'pjax', 'event-delegate', 'cache-base', 'selector-css3']});
+}, '@VERSION@', {requires: ['base-build', 'widget', 'node', 'io', 'history', 'pjax', 'event-delegate', 'cache-base', 'selector-css3']});
