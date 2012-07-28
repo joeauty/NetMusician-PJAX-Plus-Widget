@@ -5,7 +5,9 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			// error checking for missing required variables
 			
 			this.set('history', new Y.History());
+			//this.set('history', new Y.HistoryHash());
 			this.set('html5support', Y.HistoryBase.html5);
+			//this.set('html5support', false);
 			this.ppCache = new Y.Cache({max:this.get('cacheNum')});
 			this.domain = new RegExp('^(http|https):\/\/' + window.location.hostname.replace('.','\.'));
 			
@@ -16,7 +18,8 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 		},
 		
 		initAjaxLinks : function() {
-			var clickedLink;
+			var clickedLink,
+			clickedTarget;
 			
 			if (this.get('html5support')) {
 				// attach yui3-pjax class to links with REST-like URLs or URLs with permitted file extensions
@@ -61,18 +64,30 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 				PjaxLoader.on('navigate', function(e) {
 					// set var for currently clicked link
 					clickedLink = e.originEvent.target.get('href');
-					e.html5support = this.get('html5support');
+					var html5support = this.get('html5support');			
 					
 					if (this.get('startCallbackFunc') && !this.ppCache.retrieve(clickedLink)) {		
 						//Y.log('trigger start callback');
-						this.get('startCallbackFunc').call(null, e, this);
+						this.get('startCallbackFunc').call(null, {
+							clickTarget:e.originEvent.target,
+							path:e.originEvent.target.get('pathname'),
+					    	url:e.originEvent.target.get('href'),
+							html5support:html5support
+						}, this);
 					}
 				}, this);
 			
 				// trigger callback
 				PjaxLoader.after('load', function(e) {
+					var html5support = this.get('html5support');
+					
 					if (this.get('callbackFunc')) {
-						this.get('callbackFunc').call(null, e, this);
+						this.get('callbackFunc').call(null, {
+							clickTarget:clickedTarget,
+							path:clickedTarget.get('pathname'),
+					    	url:clickedTarget.get('href'),
+							html5support:html5support
+						}, this);
 					}
 				
 					Y.all(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')').addClass('yui3-pjax');
@@ -82,6 +97,8 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 				}, this);
 				
 				Y.delegate('click', function(e) {
+					clickedTarget = e.target;
+					
 					//Y.log('checking cache for ' + e.target.get('href'));
 					if (this.ppCache.retrieve(e.target.get('href'))) {
 						//Y.log('CACHE FOUND');
@@ -91,6 +108,8 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			}
 			else {
 				Y.delegate('click', function(e) {
+					var html5support = this.get('html5support');
+					
 					if (typeof e.target.get('pathname') !== "undefined") {
 						var historyhash = e.target.get('pathname').replace(/_/g,'-');
 						historyhash = e.target.get('pathname').replace(/\//g,'_');	
@@ -102,6 +121,17 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 							this.get('history').add({
 								page:historyhash
 							});
+							
+							if (this.get('callbackFunc')) {	
+								// invoke custom function
+							    this.get('callbackFunc').call(null, {
+									clickTarget:e.target,
+									path:e.target.get('pathname'),
+							    	url:e.target.get('href'),
+									historyhash:historyhash,
+									html5support:html5support
+							    }, this);
+							}
 							return;
 						}	
 					}
@@ -141,7 +171,8 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 									clickTarget:e.target,
 									path:e.target.get('pathname'),
 									url:e.target.get('href'),
-									historyhash:historyhash
+									historyhash:historyhash,
+									html5support:html5support
 								});
 							}
 					}
@@ -154,7 +185,6 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 		startAjaxLoad : function(configObj) {
 			if (this.get('startCallbackFunc') && !this.ppCache.retrieve(configObj.url)) {
 				//Y.log('trigger start callback - AJAX');
-				configObj.html5support = this.get('html5support');
 				this.get('startCallbackFunc').call(null, configObj, this);
 			}	
 			
@@ -176,11 +206,11 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 					}, this),
 					
 					success:Y.bind(function(id, transport) {
-						// add content to cache
+						configObj.transport = transport;
 						
 						if (this.get('callbackFunc')) {	
 							// invoke custom function
-						    this.get('callbackFunc').call(null, transport, this);
+						    this.get('callbackFunc').call(null, configObj, this);
 						}
 					}, this)
 				}
@@ -249,4 +279,4 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 		}
     });
     
-}, '@version@', {requires: ['base-build', 'widget', 'node', 'io', 'history', 'pjax', 'event-delegate', 'cache-base']});
+}, '@version@', {requires: ['base-build', 'widget', 'node', 'io', 'history', 'pjax', 'event-delegate', 'cache-base', 'selector-css3']});
