@@ -5,7 +5,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			// error checking for missing required variables
 			
 			this.set('history', new Y.History());
-			//this.set('history', new Y.HistoryHash());
+			this.set('historyhash', new Y.HistoryHash());
 			this.set('html5support', Y.HistoryBase.html5);
 			//this.set('html5support', false);
 			this.ppCache = new Y.Cache({max:this.get('cacheNum')});
