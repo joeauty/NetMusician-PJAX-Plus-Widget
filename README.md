@@ -1,3 +1,14 @@
+Changelog
+=========
+
+gallery-2012.08.08-20-03
+------------------------
+
+* initial release
+
+Code Sample
+===========
+
 	YUI().use('gallery-nmpjaxplus', function(Y) {
 		var PjaxPlus = new Y.PjaxPlus({
 			findLinksIn:document.body,  // look for links to init within this region
