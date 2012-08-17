@@ -72,6 +72,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 							clickTarget:e.originEvent.target,
 							path:e.originEvent.target.get('pathname'),
 					    	url:e.originEvent.target.get('href'),
+							queryString:e.originEvent.target.get('search'),
 							html5support:html5support
 						}, this);
 					}
@@ -86,6 +87,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 							clickTarget:clickedTarget,
 							path:clickedTarget.get('pathname'),
 					    	url:clickedTarget.get('href'),
+							queryString:clickedTarget.get('search'),							
 							html5support:html5support
 						}, this);
 					}
@@ -128,6 +130,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 									clickTarget:e.target,
 									path:e.target.get('pathname'),
 							    	url:e.target.get('href'),
+									queryString:e.target.get('search'),
 									historyhash:historyhash,
 									html5support:html5support
 							    }, this);
@@ -171,6 +174,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 									clickTarget:e.target,
 									path:e.target.get('pathname'),
 									url:e.target.get('href'),
+									queryString:e.target.get('search'),
 									historyhash:historyhash,
 									html5support:html5support
 								});
@@ -186,7 +190,12 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			if (this.get('startCallbackFunc') && !this.ppCache.retrieve(configObj.url)) {
 				//Y.log('trigger start callback - AJAX');
 				this.get('startCallbackFunc').call(null, configObj, this);
-			}	
+			}
+			if (!configObj.path.match(/^\//)) {
+				// make sure path has leading slash (IE seems to handle this differently)
+				configObj.path = "/" + configObj.path;
+			}
+			var loadpath = configObj.queryString ? configObj.path + configObj.queryString : configObj.path;
 			
 			var cfg = {
 				timeout: this.get('timeout'),
@@ -216,7 +225,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 				}
 			};
 			
-			Y.io(configObj.url, cfg);
+			Y.io(loadpath, cfg);
 		}
 		        
     }, {

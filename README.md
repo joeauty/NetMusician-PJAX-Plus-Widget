@@ -1,6 +1,13 @@
 Changelog
 =========
 
+HEAD
+----
+
+* AJAX calls of paths and not URLs (URLs were encoding hashes)
+* Pass along URL query strings with payload
+* prepend leading slashes to payload paths for IE
+
 gallery-2012.08.08-20-03
 ------------------------
 
