@@ -187,7 +187,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 		},
 		
 		startAjaxLoad : function(configObj) {
-			if (this.get('startCallbackFunc') && !this.ppCache.retrieve(configObj.url)) {
+			if (this.get('startCallbackFunc')) {
 				//Y.log('trigger start callback - AJAX');
 				this.get('startCallbackFunc').call(null, configObj, this);
 			}
