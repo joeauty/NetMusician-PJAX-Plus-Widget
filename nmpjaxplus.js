@@ -66,7 +66,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 					clickedLink = e.originEvent.target.get('href');
 					var html5support = this.get('html5support');			
 					
-					if (this.get('startCallbackFunc') && !this.ppCache.retrieve(clickedLink)) {		
+					if (this.get('startCallbackFunc')) {		
 						//Y.log('trigger start callback');
 						this.get('startCallbackFunc').call(null, {
 							clickTarget:e.originEvent.target,
