@@ -95,7 +95,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 					Y.all(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')').addClass('yui3-pjax');
 					//Y.log('add ' + clickedLink + ' to cache');
 					// add content to cache
-					this.ppCache.add(clickedLink, Y.one(this.get('contentSelector')).getContent());
+					this.ppCache.add(clickedLink, Y.one(this.get('contentSelector')).getHTML());
 				}, this);
 				
 				Y.delegate('click', function(e) {
@@ -104,7 +104,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 					//Y.log('checking cache for ' + e.target.get('href'));
 					if (this.ppCache.retrieve(e.target.get('href'))) {
 						//Y.log('CACHE FOUND');
-						Y.one(this.get('contentSelector')).setContent(this.ppCache.retrieve(e.target.get('href')).response);
+						Y.one(this.get('contentSelector')).setHTML(this.ppCache.retrieve(e.target.get('href')).response);
 					}
 				}, document.body, 'a.yui3-pjax', this);
 			}
@@ -118,7 +118,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 					
 						if (this.ppCache.retrieve(e.target.get('href'))) {
 							// output cache, set history token
-							Y.one(this.get('contentSelector')).setContent(this.ppCache.retrieve(e.target.get('href')).response);
+							Y.one(this.get('contentSelector')).setHTML(this.ppCache.retrieve(e.target.get('href')).response);
 						
 							this.get('history').add({
 								page:historyhash
@@ -196,13 +196,24 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 				configObj.path = "/" + configObj.path;
 			}
 			var loadpath = configObj.queryString ? configObj.path + configObj.queryString : configObj.path;
+			if (this.get('nofrags')) {
+				// add query string to XHR URL for stripping header and footer on backend
+				loadpath += configObj.queryString ? '&nofrag=1' : '?nofrag=1';
+			}
 			
 			var cfg = {
 				timeout: this.get('timeout'),
 				on : {
 					complete:Y.bind(function(id, transport) {
-						var frag = Y.Node.create(transport.responseText);
-						Y.one(this.get('contentSelector')).setContent(frag.one(this.get('contentSelector')).getContent());
+						if (this.get('nofrags')) {
+							var output = transport.responseText;
+							Y.one(this.get('contentSelector')).set('innerHTML', output);
+						}
+						else {
+							var frag = Y.Node.create(transport.responseText);
+							Y.one(this.get('contentSelector')).setHTML(frag.one(this.get('contentSelector')).getHTML());
+							var output = frag.one(this.get('contentSelector')).getHTML();
+						}
 						
 						// set history token
 						this.get('history').add({
@@ -210,7 +221,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 						});
 						
 						// cache output
-						this.ppCache.add(configObj.url, frag.one(this.get('contentSelector')).getContent());
+						this.ppCache.add(configObj.url, output);
 						
 					}, this),
 					
@@ -284,6 +295,10 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			
 			cacheNum : {
 				value : 10
+			},
+			
+			nofrags : {
+				value : false
 			}
 		}
     });

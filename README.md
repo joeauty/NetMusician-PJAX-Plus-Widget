@@ -4,6 +4,12 @@ Changelog
 HEAD
 ----
 
+* added "nofrag" instantiation argument for older versions of IE (see "compatibility with older versions of IE" section, below)
+* use YUI Node getHTML() and setHTML() to replace deprecated getContent() and setContent()
+
+gallery-2012.10.03-20-02
+----
+
 * startCallbackFunc should be fired unconditionally
 
 gallery-2012.08.22-20-00
