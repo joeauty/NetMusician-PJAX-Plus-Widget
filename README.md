@@ -4,7 +4,7 @@ Changelog
 HEAD
 ----
 
-* added "nofrag" instantiation argument for older versions of IE (see "compatibility with older versions of IE" section, below)
+* added "nofrags" instantiation argument for older versions of IE (see the "Compatibility with Older Versions of IE" section, below)
 * use YUI Node getHTML() and setHTML() to replace deprecated getContent() and setContent()
 
 gallery-2012.10.03-20-02
@@ -35,7 +35,8 @@ Code Sample
 			omitLinkClass:'noajax',  // skip initing this widget on links assigned to this class
 			permittedFileExts:['php'],  // in addition to REST-like URLs that do not have file extensions, init URLs with these extensions
 			startCallbackFunc:Y.bind(startPjaxCallback),  // callback that is triggered before content is loaded
-			callbackFunc:Y.bind(pjaxCallback)  // callback triggered after content has been loaded
+			callbackFunc:Y.bind(pjaxCallback),  // callback triggered after content has been loaded
+			nofrags:false  // optional argument for older versions of IE (see below)
 		});
 		PjaxPlus.initAjaxLinks();  // initialize PjaxPlus
 	
@@ -58,3 +59,10 @@ Code Sample
 			//initJSContent();
 		}
 	});
+	
+Compatibility with Older Versions of IE
+=======================================
+
+This library uses document fragments created via Y.Node.Create in browsers that don't support HTML5 history. This seems to work fine in IE 9, but we have found that IE 8 and presumably earlier versions have difficulty with unsupported tags such as <audio> and <video>. In these cases, some markup is dropped from the final output.
+	
+As a workaround for this issue, there is an optional option called "nofrags" that when set to true, will not create document fragments and will instead output the entire XHR response (i.e. payload.responseText) to the contentSelector area. Since in many cases this XHR output will include the header and footer to the site, a query string *nofrag* is sent with the request so that on your backend you can omit outputting this content if this HTTP GET variable has been set.
