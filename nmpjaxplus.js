@@ -23,7 +23,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			
 			if (this.get('html5support')) {
 				// attach yui3-pjax class to links with REST-like URLs or URLs with permitted file extensions
-				this.addPjaxClass();
+				this.addPjaxClass(false);
 				
 				var PjaxLoader = new Y.Pjax({
 					addPjaxParam : this.get('addPjaxParam'),
@@ -68,7 +68,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 						}, this);
 					}
 				
-					this.addPjaxClass();
+					this.addPjaxClass(true);
 					
 					//Y.log('add ' + clickedLink + ' to cache');
 					// add content to cache
@@ -166,13 +166,12 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 		addPjaxClass : function(usecontainer) {
 			var goodext = false;
 			var searchelem = usecontainer ? this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')' : 'a:not(.' + this.get('omitLinkClass') + ')';
+			
 			Y.all(searchelem).each(function(node) {
 				var pathnamearr = node.get('pathname').split(/\//);
-				Y.log(pathnamearr);
 				var pathnameidx = pathnamearr.length - 1;
 				var filename = pathnamearr[pathnameidx];
 				
-				Y.log('filename: ' + filename);
 				if (!filename.match(/\./)) {
 					// no file extension, valid REST-like URL
 					goodext = true;
