@@ -165,12 +165,14 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 		
 		addPjaxClass : function() {
 			var goodext = false;
+			Y.log(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')');
 			Y.all(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')').each(function(node) {
 				var pathnamearr = node.get('pathname').split(/\//);
+				Y.log(pathnamearr);
 				var pathnameidx = pathnamearr.length - 1;
 				var filename = pathnamearr[pathnameidx];
 				
-				Y.log(filename);
+				Y.log('filename: ' + filename);
 				if (!filename.match(/\./)) {
 					// no file extension, valid REST-like URL
 					goodext = true;
