@@ -170,6 +170,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 				var pathnameidx = pathnamearr.length - 1;
 				var filename = pathnamearr[pathnameidx];
 				
+				Y.log(filename);
 				if (!filename.match(/\./)) {
 					// no file extension, valid REST-like URL
 					goodext = true;
