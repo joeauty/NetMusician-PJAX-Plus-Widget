@@ -190,7 +190,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 					}
 				
 			}, this);
-		}
+		},
 		
 		startAjaxLoad : function(configObj) {
 			if (this.get('startCallbackFunc')) {
