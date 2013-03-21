@@ -163,10 +163,10 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			}
 		},
 		
-		addPjaxClass : function() {
+		addPjaxClass : function(usecontainer) {
 			var goodext = false;
-			Y.log(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')');
-			Y.all(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')').each(function(node) {
+			var searchelem = usecontainer ? this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')' : 'a:not(.' + this.get('omitLinkClass') + ')';
+			Y.all(searchelem).each(function(node) {
 				var pathnamearr = node.get('pathname').split(/\//);
 				Y.log(pathnamearr);
 				var pathnameidx = pathnamearr.length - 1;
