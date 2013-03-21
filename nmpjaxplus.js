@@ -23,31 +23,7 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 			
 			if (this.get('html5support')) {
 				// attach yui3-pjax class to links with REST-like URLs or URLs with permitted file extensions
-				var goodext = false;
-				Y.all('a:not(.' + this.get('omitLinkClass') + ')').each(function(node) {
-					var pathnamearr = node.get('pathname').split(/\//);
-					var pathnameidx = pathnamearr.length - 1;
-					var filename = pathnamearr[pathnameidx];
-						
-					if (!filename.match(/\./)) {
-						// no file extension, valid REST-like URL
-						goodext = true;
-					}
-					else {
-						// URL contains file extensions, look for permitted file extensions
-						goodext = Y.Array.some(this.get('permittedFileExts'), function(ext) {
-							var thisregex = new RegExp('\.' + ext + '$');
-							if (filename.match(thisregex)) {
-								return true;
-							}
-						});
-					}
-					
-					if (goodext && !node.get('href').match(/^(mailto|javascript):/) && !node.get('href').match(/^#/) && 
-						node.get('href').match(this.domain) && !node.hasClass(this.get('omitLinkClass'))) {
-							node.addClass('yui3-pjax');
-						}
-				}, this);
+				this.addPjaxClass();
 				
 				var PjaxLoader = new Y.Pjax({
 					addPjaxParam : this.get('addPjaxParam'),
@@ -87,12 +63,13 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 							clickTarget:clickedTarget,
 							path:clickedTarget.get('pathname'),
 					    	url:clickedTarget.get('href'),
-							queryString:clickedTarget.get('search'),							
+							queryString:clickedTarget.get('search'),
 							html5support:html5support
 						}, this);
 					}
 				
-					Y.all(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')').addClass('yui3-pjax');
+					this.addPjaxClass();
+					
 					//Y.log('add ' + clickedLink + ' to cache');
 					// add content to cache
 					this.ppCache.add(clickedLink, Y.one(this.get('contentSelector')).getHTML());
@@ -185,6 +162,35 @@ YUI.add('gallery-nmpjaxplus', function(Y){
 				
 			}
 		},
+		
+		addPjaxClass : function() {
+			var goodext = false;
+			Y.all(this.get('container') + ' a:not(.' + this.get('omitLinkClass') + ')').each(function(node) {
+				var pathnamearr = node.get('pathname').split(/\//);
+				var pathnameidx = pathnamearr.length - 1;
+				var filename = pathnamearr[pathnameidx];
+				
+				if (!filename.match(/\./)) {
+					// no file extension, valid REST-like URL
+					goodext = true;
+				}
+				else {
+					// URL contains file extensions, look for permitted file extensions
+					goodext = Y.Array.some(this.get('permittedFileExts'), function(ext) {
+						var thisregex = new RegExp('\.' + ext + '$');
+						if (filename.match(thisregex)) {
+							return true;
+						}
+					});
+				}
+				
+				if (goodext && !node.get('href').match(/^(mailto|javascript):/) && !node.get('href').match(/^#/) && 
+					node.get('href').match(this.domain) && !node.hasClass(this.get('omitLinkClass'))) {
+						node.addClass('yui3-pjax');
+					}
+				
+			}, this);
+		}
 		
 		startAjaxLoad : function(configObj) {
 			if (this.get('startCallbackFunc')) {
