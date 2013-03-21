@@ -4,11 +4,16 @@ Changelog
 HEAD
 ----
 
+* bugfixes for yui3-pjax class creation/link triggers
+
+gallery-2013.02.07-15-27
+------------------------
+
 * added "nofrags" instantiation argument for older versions of IE (see the "Compatibility with Older Versions of IE" section, below)
 * use YUI Node getHTML() and setHTML() to replace deprecated getContent() and setContent()
 
 gallery-2012.10.03-20-02
-----
+------------------------
 
 * startCallbackFunc should be fired unconditionally
 
